@@ -4,13 +4,8 @@ body {
   padding: 20px;
 }
 
-h1 {
-  margin-bottom: 15px;
-}
-
 button {
-  padding: 10px 15px;
-  cursor: pointer;
+  padding: 10px;
   margin-bottom: 20px;
 }
 
@@ -28,10 +23,5 @@ table {
 
 th, td {
   border-bottom: 1px solid #ddd;
-  padding: 6px;
-  text-align: left;
-}
-
-th {
-  background: #eee;
+  padding: 8px;
 }

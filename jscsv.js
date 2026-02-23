@@ -4,12 +4,8 @@ function fetchCSV(url) {
             download: true,
             header: true,
             skipEmptyLines: true,
-            complete: function (results) {
-                resolve(results.data);
-            },
-            error: function (err) {
-                reject(err);
-            }
+            complete: res => resolve(res.data),
+            error: err => reject(err)
         });
     });
 }

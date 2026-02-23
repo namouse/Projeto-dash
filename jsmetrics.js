@@ -1,32 +1,46 @@
-function agruparPorAtendente() {
-    return DADOS.reduce((acc, item) => {
-        const atendente = item["atendente responsavel"];
-        if (!acc[atendente]) acc[atendente] = [];
-        acc[atendente].push(item);
-        return acc;
-    }, {});
-}
-
 function clientesMaisNovos() {
-    const grupos = agruparPorAtendente();
-    let resultado = {};
-
-    for (let atendente in grupos) {
-        resultado[atendente] = grupos[atendente]
-            .sort((a, b) => new Date(b["data de entrada"]) - new Date(a["data de entrada"]))
-            .slice(0, 5);
-    }
-    return resultado;
+    return [...dados]
+        .sort((a, b) => new Date(b.entrada) - new Date(a.entrada))
+        .slice(0, 5);
 }
 
 function maioresBoletos() {
-    const grupos = agruparPorAtendente();
-    let resultado = {};
+    return [...dados]
+        .sort((a, b) => b.boleto - a.boleto)
+        .slice(0, 5);
+}
 
-    for (let atendente in grupos) {
-        resultado[atendente] = grupos[atendente]
-            .sort((a, b) => Number(b["valor do boleto mais atual"]) - Number(a["valor do boleto mais atual"]))
-            .slice(0, 5);
+function renderTabela(lista, id) {
+    const div = document.getElementById(id);
+
+    if (!lista.length) {
+        div.innerHTML = "Sem dados";
+        return;
     }
-    return resultado;
+
+    let html = `
+        <table>
+            <tr>
+                <th>Cliente</th>
+                <th>Atendente</th>
+                <th>Entrada</th>
+                <th>Boleto</th>
+                <th>Origem</th>
+            </tr>
+    `;
+
+    lista.forEach(i => {
+        html += `
+            <tr>
+                <td>${i.cliente}</td>
+                <td>${i.atendente}</td>
+                <td>${i.entrada}</td>
+                <td>R$ ${i.boleto.toFixed(2)}</td>
+                <td>${i.origem}</td>
+            </tr>
+        `;
+    });
+
+    html += "</table>";
+    div.innerHTML = html;
 }

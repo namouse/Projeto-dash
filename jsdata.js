@@ -1,15 +1,29 @@
-let DADOS = [];
+let dados = [];
 
 async function carregarDados() {
-    console.log("Iniciando carregamento CSV...");
-
     const onboarding = await fetchCSV(CONFIG.CSV_ONBOARDING);
-    console.log("Onboarding:", onboarding.length, onboarding[0]);
-
     const ongoing = await fetchCSV(CONFIG.CSV_ONGOING);
-    console.log("Ongoing:", ongoing.length, ongoing[0]);
 
-    DADOS = [...onboarding, ...ongoing];
+    const normalizar = (linha, origem) => ({
+        cliente: linha["2 - Cliente"]?.trim(),
+        atendente: linha["Aten"]?.trim(),
+        entrada: linha["4 - Entrada"],
+        boleto: parseMoeda(linha["6 - Ultimo boleto"]),
+        origem
+    });
 
-    console.log("TOTAL DADOS:", DADOS.length);
+    dados = [
+        ...onboarding.map(l => normalizar(l, "Onboarding")),
+        ...ongoing.map(l => normalizar(l, "Ongoing"))
+    ].filter(d => d.cliente && d.atendente);
+}
+
+function parseMoeda(v) {
+    if (!v) return 0;
+    return Number(
+        v.replace("R$", "")
+         .replace(".", "")
+         .replace(",", ".")
+         .trim()
+    ) || 0;
 }

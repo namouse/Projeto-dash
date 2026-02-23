@@ -4,62 +4,38 @@
     <meta charset="UTF-8">
     <title>Dashboard de Implantação</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>📊 Dashboard de Implantação</h1>
+<h1>📊 Dashboard de Implantação</h1>
+<button id="btnAtualizar">🔄 Atualizar dados</button>
 
-    <button id="btnAtualizar">🔄 Atualizar dados</button>
+<section class="card">
+    <h2>🧑‍💼 5 clientes mais novos</h2>
+    <div id="clientesNovos"></div>
+</section>
 
-    <section class="card">
-        <h2>📌 Métricas Gerais</h2>
-        <div id="metricas">Carregando...</div>
-    </section>
+<section class="card">
+    <h2>💰 5 maiores boletos</h2>
+    <div id="maioresBoletos"></div>
+</section>
 
-    <section class="card">
-        <h2>🧑‍💼 5 clientes mais novos por atendente</h2>
-        <div id="clientesNovos">Carregando...</div>
-    </section>
-
-    <section class="card">
-        <h2>💰 5 maiores boletos por atendente</h2>
-        <div id="maioresBoletos">Carregando...</div>
-    </section>
-
-    <!-- DEBUG HTML -->
-    <script>
-        console.log("HTML carregado");
-    </script>
-
-    <!-- 1️⃣ PapaParse (OBRIGATORIAMENTE antes de qualquer JS seu) -->
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- DEBUG Papa -->
-    <script>
-        console.log("Papa carregado?", typeof Papa);
-    </script>
-
-    <section class="card">
+<section class="card">
     <h2>📈 Visões Gerais</h2>
+    <canvas id="graficoClientes"></canvas>
+    <canvas id="graficoFaturamento"></canvas>
+</section>
 
-    <canvas id="graficoClientesAtendente"></canvas>
-    <br>
-    <canvas id="graficoFaturamentoAtendente"></canvas>
-    <br>
-    <canvas id="graficoBaseDesatualizada"></canvas>
-    </section>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- 2️⃣ Seus scripts (ordem IMPORTA) -->
-    <script src="jsconfig.js"></script>
-    <script src="jscsv.js"></script>
-    <script src="jsdata.js"></script>
-    <script src="jsmetrics.js"></script>
-    <script src="jscharts.js"></script>
-    <script src="jsmain.js"></script>
+<script src="jsconfig.js"></script>
+<script src="jscsv.js"></script>
+<script src="jsdata.js"></script>
+<script src="jsmetrics.js"></script>
+<script src="jscharts.js"></script>
+<script src="jsmain.js"></script>
 
 </body>
 </html>
