@@ -1,29 +1,34 @@
-let dados = [];
+let dadosOnboarding = [];
+let dadosOngoing = [];
 
 async function carregarDados() {
+
+    // 🔹 ONBOARDING
     const onboarding = await fetchCSV(CONFIG.CSV_ONBOARDING);
+
+    dadosOnboarding = onboarding.map(l => ({
+        cliente: l["2 - Cliente"]?.trim(),
+        atendente: l["Aten"]?.trim(),
+        entrada: l["4 - Entrada"],
+        diasSemContato: Number(l["13 - Dias do ultimo contato"]) || null
+    })).filter(d => d.cliente);
+
+    // 🔹 ONGOING
     const ongoing = await fetchCSV(CONFIG.CSV_ONGOING);
 
-    const normalizar = (linha, origem) => ({
-        cliente: linha["2 - Cliente"]?.trim(),
-        atendente: linha["Aten"]?.trim(),
-        entrada: linha["4 - Entrada"],
-        boleto: parseMoeda(linha["6 - Ultimo boleto"]),
-        origem
-    });
-
-    dados = [
-        ...onboarding.map(l => normalizar(l, "Onboarding")),
-        ...ongoing.map(l => normalizar(l, "Ongoing"))
-    ].filter(d => d.cliente && d.atendente);
+    dadosOngoing = ongoing.map(l => ({
+        cliente: l["2 - Cliente"]?.trim(),
+        atendente: l["Aten"]?.trim(),
+        boleto: parseMoeda(l["6 - Ultimo boleto"])
+    })).filter(d => d.cliente);
 }
 
-function parseMoeda(v) {
-    if (!v) return 0;
+function parseMoeda(valor) {
+    if (!valor) return 0;
     return Number(
-        v.replace("R$", "")
-         .replace(".", "")
-         .replace(",", ".")
-         .trim()
+        valor.replace("R$", "")
+             .replace(".", "")
+             .replace(",", ".")
+             .trim()
     ) || 0;
 }
