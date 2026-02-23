@@ -1,36 +1,73 @@
-function renderTabela(dados, containerId) {
-    let html = "";
+let chartClientes;
+let chartFaturamento;
+let chartBase;
 
-    for (let atendente in dados) {
-        html += `<h3>${atendente}</h3>`;
-        html += `<table>
-            <tr>
-                <th>Cliente</th>
-                <th>Data Entrada</th>
-                <th>Valor Boleto</th>
-            </tr>`;
+function renderGraficos(dados) {
 
-        dados[atendente].forEach(c => {
-            html += `<tr>
-                <td>${c["nome do cliente"]}</td>
-                <td>${c["data de entrada"]}</td>
-                <td>R$ ${c["valor do boleto mais atual"]}</td>
-            </tr>`;
-        });
+    const porAtendente = {};
 
-        html += `</table>`;
-    }
+    dados.forEach(c => {
+        const atendente = c.atendente;
+        const boleto = Number(c.valorBoleto) || 0;
+        const baseDesat = Number(c.percentualDesatualizada) || 0;
 
-    document.getElementById(containerId).innerHTML = html;
-}
+        if (!porAtendente[atendente]) {
+            porAtendente[atendente] = {
+                clientes: 0,
+                faturamento: 0,
+                baseDesat: []
+            };
+        }
 
-function renderMetricas() {
-    document.getElementById("metricas").innerHTML = `
-        <p><strong>Total de clientes:</strong> ${DADOS.length}</p>
-    `;
-}
+        porAtendente[atendente].clientes += 1;
+        porAtendente[atendente].faturamento += boleto;
+        porAtendente[atendente].baseDesat.push(baseDesat);
+    });
 
-function renderDebug() {
-    document.getElementById("clientesNovos").innerHTML =
-        "<pre>" + JSON.stringify(DADOS.slice(0, 2), null, 2) + "</pre>";
+    const labels = Object.keys(porAtendente);
+
+    const clientesData = labels.map(a => porAtendente[a].clientes);
+    const faturamentoData = labels.map(a => porAtendente[a].faturamento);
+    const baseMedia = labels.map(a => {
+        const arr = porAtendente[a].baseDesat;
+        return arr.reduce((s, v) => s + v, 0) / arr.length;
+    });
+
+    // 🔹 Limpa gráficos antigos
+    chartClientes?.destroy();
+    chartFaturamento?.destroy();
+    chartBase?.destroy();
+
+    chartClientes = new Chart(document.getElementById("graficoClientesAtendente"), {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [{
+                label: "Clientes por atendente",
+                data: clientesData
+            }]
+        }
+    });
+
+    chartFaturamento = new Chart(document.getElementById("graficoFaturamentoAtendente"), {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [{
+                label: "Faturamento total (R$)",
+                data: faturamentoData
+            }]
+        }
+    });
+
+    chartBase = new Chart(document.getElementById("graficoBaseDesatualizada"), {
+        type: "pie",
+        data: {
+            labels,
+            datasets: [{
+                label: "% Base desatualizada (média)",
+                data: baseMedia
+            }]
+        }
+    });
 }

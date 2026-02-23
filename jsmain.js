@@ -3,8 +3,11 @@ alert("JSMAIN CARREGOU");
 async function atualizarDashboard() {
     await carregarDados();
 
-    document.getElementById("clientesNovos").innerHTML =
-        "<pre>" + JSON.stringify(DADOS.slice(0, 2), null, 2) + "</pre>";
+    renderMetricas();
+    renderTabela(clientesMaisNovos(), "clientesNovos");
+    renderTabela(maioresBoletos(), "maioresBoletos");
+
+    renderGraficos(dadosGerais); // 👈 AQUI
 }
 
 document.getElementById("btnAtualizar")
